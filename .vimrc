@@ -3,16 +3,17 @@
 set nocompatible              " Don't be compatible with vi
 
 " leader key assignment.
-let g:mapleader=","             " change the leader to be a comma vs slash
+let g:mapleader=','             " change the leader to be a comma vs slash
 
 " ==========================================================
 " configuration for Windows.
 " ==========================================================
-if has("win32")
+if has('win32')
 	"
 	" skip Windows settings.
 	let g:skip_loading_mswin=1
 
+	set noshelltemp
 	function ShellDefault()
 		let &shell = g:defaultshell
 		let &shellcmdflag = g:defaultshellcmdflag
@@ -38,16 +39,16 @@ if has("win32")
 	set fileencodings=utf-8,iso-2022-jp,cp932,euc-jp,default,latin
 
 	" shell definition
-	let g:defaultshell = "bash"
-	let g:defaultshellcmdflag = "--login -c"
+	let g:defaultshell = 'bash'
+	let g:defaultshellcmdflag = '--login -c'
 	let g:defaultshellslash = 1 	" true
 
 	let g:gitshell = "C:\\Program Files\\Git\\git-cmd.exe"
-	let g:gitshellcmdflag = ""
+	let g:gitshellcmdflag = ''
 	let g:gitshellslash = 1 	" true
 
-	let g:winshell = "cmd.exe"
-	let g:winshellcmdflag = "/c"
+	let g:winshell = 'cmd.exe'
+	let g:winshellcmdflag = '/c'
 	let g:winshellslash = 0 	" false
 	" ----------------------------------------------------------------------------
 	"set shell=cmd.exe
@@ -59,7 +60,11 @@ if has("win32")
 	setglobal iminsert=0
 	setglobal imsearch=0
 
-elseif has("unix")
+	" For Sails
+	set directory-=.
+	set backupdir-=.
+
+elseif has('unix')
  	"set runtimepath=$HOME/.vim,$VIM/vimfiles,$VIMRUNTIME,/usr/share/vim-scripts,$VIM/vimfiles/after,$HOME/.vim/after
 	"set shell=bash
 	"set shellcmdflag = "-c"
@@ -75,43 +80,28 @@ scriptencoding utf-8
 " ==========================================================
 " Plugins
 " ==========================================================
-call plug#begin('~/.vim/plugged')
-
-Plug 'SirVer/ultisnips'
-Plug 'altercation/vim-colors-solarized'
-Plug 'godlygeek/tabular'
-Plug 'honza/vim-snippets'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'pangloss/vim-javascript'
+call plug#begin()
+Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'scrooloose/nerdtree'
 Plug 'sjl/gundo.vim'
-Plug 'tpope/vim-markdown'
+Plug 'godlygeek/tabular'
+Plug 'altercation/vim-colors-solarized'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
-Plug 'MaxMEllon/vim-jsx-pretty'
+Plug 'honza/vim-snippets'
 Plug 'jalvesaq/Nvim-R'
-" Plug 'tpope/vim-fugitive'
-" Plug 'w0rp/ale'
-" Plug 'davidhalter/jedi-vim'
-" Plug 'pangloss/vim-javascript'
-" Plug 'vim-latex/vim-latex'
-
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'vim-airline/vim-airline'
 call plug#end()
 
 " ==========================================================
-" Config plugins: General
+" Plugins: General
 " ==========================================================
-" Coc
-" if hidden is not set, TextEdit might fail.
+" coc
 set hidden
-" " Some servers have issues with backup files, see #649
-" set nobackup
-" set nowritebackup
-" You will have bad experience for diagnostic messages when it's default 4000.
 set updatetime=300
-" don't give |ins-completion-menu| messages.
 set shortmess+=c
-" always show signcolumns
-set signcolumn=yes
+set signcolumn="auto"
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>
@@ -124,12 +114,10 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 " Use <s-space> to trigger completion.
-inoremap <silent><expr> <s-space> coc#refresh()
+inoremap <silent><expr> <S-space> coc#refresh()
 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
 " Coc only does snippet and additional edit on confirm.
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" Or use `complete_info` if your vim support it, like:
-" inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
 nmap <silent> ]g <Plug>(coc-diagnostic-next)
@@ -151,63 +139,26 @@ endfunction
 autocmd CursorHold * silent call CocActionAsync('highlight')
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
+nmap <leader>rf <Plug>(coc-refactor)
 " Remap for format selected region
-xmap <leader>f  <Plug>(coc-format-selected)
-nmap <leader>f  <Plug>(coc-format-selected)
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
+" Remap for format whole file
+inoremap <leader>f <Plug>(coc-format)
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
-  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  autocmd FileType typescript,json setl formatexpr=CocActionAsync('formatSelected')
   " Update signature help on jump placeholder
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-xmap <leader>a  <Plug>(coc-codeaction-selected)
-nmap <leader>a  <Plug>(coc-codeaction-selected)
-" Remap for do codeAction of current line
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-nmap <leader>qf  <Plug>(coc-fix-current)
-" Create mappings for function text object, requires document symbols feature of languageserver.
-xmap if <Plug>(coc-funcobj-i)
-xmap af <Plug>(coc-funcobj-a)
-omap if <Plug>(coc-funcobj-i)
-omap af <Plug>(coc-funcobj-a)
-" Use <C-d> for select selections ranges, needs server support, like: coc-tsserver, coc-python
-nmap <silent> <C-d> <Plug>(coc-range-select)
-xmap <silent> <C-d> <Plug>(coc-range-select)
-" Use `:Format` to format current buffer
-command! -nargs=0 Format :call CocAction('format')
-" Use `:Fold` to fold current buffer
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-" use `:OR` for organize import of current buffer
-command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-" Add status line support, for integration with other plugin, checkout `:h coc-status`
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-" Using CocList
-" Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list
-nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
 
 " zip
-let g:zip_unzipcmd = "gunzip"
-let g:zip_zipcmd = "gzip"
+let g:zip_unzipcmd = 'gunzip'
+let g:zip_zipcmd = 'gzip'
 
 " Gundo
+let g:gundo_prefer_python3 = 1
 nnoremap <F5> :GundoToggle<CR>
 
 " NERDTree
@@ -215,51 +166,9 @@ let g:NERDTreeShowBookmarks = 1
 " Open NerdTree
 map <leader>n :NERDTreeToggle<CR>
 
-
 " ==========================================================
-" Config plugins: Language specific
+" Plugins: Language specific
 " ==========================================================
-
-" Python
-if has("python3")
-	" jedi
-	" ** jedi is not filetype plugin.
-	let g:jedi#completions_command = "<C-;>"
-	let g:jedi#documentation_command = "K"
-	let g:jedi#popup_on_dot = 0
-	let g:jedi#usages_command = "<leader>jn"
-endif
-
-
-" latex-suite
-let g:tex_flavor='latex'
-
-
-" NVim-R
-let g:R_args = ['--encoding=utf-8']
-if has("win32")
-	let g:R_path = "D:\\Program Files\\R\\R-3.5.3\\bin\\i386"
-endif
-
-"
-"" Ale
-noremap <leader>f :ALEFix<CR>
-
-" let g:ale_linters = {'java': ['checkstyle']}
-
-" let g:ale_fixers = {
-" \   'javascript': ['eslint', 'prettier'],
-" \   'html': ['eslint'],
-" \   'awk': ['gawk'],
-" \   'markdown': ['prettier', 'write-good'],
-" \   'python': ['autopep8','flake8'],
-" \   'xml': ['xmllint'],
-" \   'yaml': ['prettier'],
-" \   'css': ['prettier'],
-" \   'json': ['fixjson', 'jq'],
-" \   'go': ['gofmt'],
-" \}
-
 
 " ==========================================================
 " Basic Settings
@@ -276,16 +185,13 @@ set showcmd		      " display incomplete commands
 set tags=~/.tags,.tags	      " standard C library tags
 
 " backup
-if has("vms")
+if has('vms')
   set nobackup		" do not keep a backup file, use versions instead
 else
   set backup		" keep a backup file
 endif
 set history=50		" keep 50 lines of command line history
 
-" Status Line
-"set stl=%t%m%r%y(%{&ff}:%{&enc})\ [%03b:%02B]\ [%03c,%03l]\ %P
-set stl=%t%m%r%y(%{&ff}:%{&enc})\ [%03b:%02B]\ [%03c,%03l]\ %P\ \ \ \[%{strftime('%Y\ %b\ %d\ %X')}\]
 
 """ Moving Around/Editing
 set cursorline              " have a line indicate the cursor location
@@ -320,16 +226,16 @@ set incsearch               " Incrementally search while typing a /regex
 set ch=2		    " Make command line two lines high
 
 "
-"
 " color setting in console
-if has("win32")
+if has('win32')
 	colorscheme solarized
 	set background=light
-elseif has("unix")
-	colorscheme torte
-	set background=dark
+else
+	if has('unix')
+		colorscheme torte
+		set background=dark
+	endif
 endif
-
 
 " Copy and Paste from clipboard
 noremap <leader>p "+p
@@ -355,17 +261,6 @@ set switchbuf+=usetab,newtab
 nmap <leader>com! :call setqflist([])<CR>
 
 
-"
-" create index with '^N.N. ' format line.
-"
-" all levels
-nnoremap <leader>toc :vimgrep /\v^(\d+<bar>\u)\.(\d+\.*)*\ / %:p <bar> copen<CR>
-" 2 levels
-nnoremap <leader>to2 :vimgrep /\v^(\d+<bar>\u)\.(\d+\.*){0,1}\ / %:p <bar> copen<CR>
-" top level
-nnoremap <leader>to1 :vimgrep /\v^(\d+<bar>\u)\.\ / %:p <bar> copen<CR>
-
-"
 " quotate selected lines.
 vnoremap <leader>q :s/^/\>\ /<CR>
 
@@ -430,17 +325,27 @@ augroup templates
 	autocmd BufNewFile *.txt	call s:ReadTmpl(expand("%:e"))
 
 	function! s:ChkTmpl(ext)
-		:if getfsize(expand("%")) == 0
-			:let tmpl = "~/vimfiles/templates/source_template." . a:ext
+		:if getfsize(expand('%')) == 0
+			:let tmpl = '~/vimfiles/templates/source_template.' . a:ext
 			:execute ':0r ' . '~/.vim/templates/source_template.' . a:ext
 		:endif
 	endfunction
 
 	function! s:ReadTmpl(ext)
-		:let tmpl = "~/vimfiles/templates/source_template." . a:ext
+		:let tmpl = '~/vimfiles/templates/source_template.' . a:ext
 		:execute ':0r ' . '~/.vim/templates/source_template.' . a:ext
 	endfunction
 augroup END
+
+"  " ===========================================================
+"  " FileType specific changes
+"  " ============================================================
+"  augroup vimrc
+"  	" Remove all vimrc autocommands
+"  	autocmd!
+"  	" html,xhtml,xml,css
+"  	au FileType css setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2
+"  augroup END
 
 " ==================
 " Shell variables are overwritten at times.

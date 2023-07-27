@@ -28,10 +28,10 @@ endif
 " ------------------------------------------------------------------
 " Solarized Colorscheme Config
 " ------------------------------------------------------------------
-let g:solarized_hitrail=0    "default value is 0
-syntax enable
-set background=light
-colorscheme solarized
+ let g:solarized_hitrail=0    "default value is 0
+ syntax enable
+ set background=light
+ colorscheme solarized
 " ------------------------------------------------------------------
 
 " The following items are available options, but do not need to be
@@ -75,10 +75,10 @@ endif
 
 if has("unix")
 	" set GUI fonts
-	set guifont=Inconsolata\ Bold\ 11
+	set guifont=Inconsolata\ Bold\ 12
 	" set guifontwide=Migu\ 1M\ Bold\ 12
-	set guifontwide=Noto\ Sans\ Mono\ CJK\ JP\ Bold\ 11
-	set linespace=-3
+	set guifontwide=Noto\ Sans\ Mono\ CJK\ JP\ Bold\ 12
+	set linespace=-2
 
 elseif has("win32")
 	" Alt-Space is System menu
@@ -90,10 +90,11 @@ elseif has("win32")
 
 	" set GUI fonts
 	" set guifont=Anonymous_Pro:h10:cANSI
-	" set guifont=Consolas:h10:b:cANSI
+	set guifont=Consolas:h11:b:cANSI
 	" set guifont=Noto_Mono:h10:cANSI:qDRAFT
+	" set guifont=Noto_Mono:h11:cANSI
 
-	set guifont=Ricty_Diminished:h11:b
+	set guifontwide=Migu_1M:h11:b:cDEFAULT,Noto_Sans_Mono_CJK_JP_Regular
 	" " guifontwideはutf-8の時のみ有効
 	"set guifontwide=IPAGothic:h10:w5:b:cDEFAULT,Noto_Sans_Mono_CJK_JP_Regular
 

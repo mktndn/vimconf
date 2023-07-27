@@ -178,6 +178,3 @@ if has('win32')
 	setl noshellslash
 endif
 
-let b:ale_fixers = ['google_java_format']
-" let b:ale_java_javac_options = "-encoding UTF-8"
-
