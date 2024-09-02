@@ -75,10 +75,11 @@ endif
 
 if has("unix")
 	" set GUI fonts
-	set guifont=Inconsolata\ Bold\ 12
+	" set guifont=Inconsolata\ Bold\ 12
+	set guifont=Moralerspace\ Argon\ HW\ Bold\ 12
 	" set guifontwide=Migu\ 1M\ Bold\ 12
-	set guifontwide=Noto\ Sans\ Mono\ CJK\ JP\ Bold\ 12
-	set linespace=-2
+	"set guifontwide=Noto\ Sans\ Mono\ CJK\ JP\ Bold\ 12
+	set linespace=0
 
 elseif has("win32")
 	" Alt-Space is System menu
@@ -97,7 +98,6 @@ elseif has("win32")
 	set guifontwide=Migu_1M:h11:b:cDEFAULT,Noto_Sans_Mono_CJK_JP_Regular
 	" " guifontwideはutf-8の時のみ有効
 	"set guifontwide=IPAGothic:h10:w5:b:cDEFAULT,Noto_Sans_Mono_CJK_JP_Regular
-
 
 endif
 

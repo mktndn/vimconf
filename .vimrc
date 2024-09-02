@@ -92,6 +92,7 @@ Plug 'honza/vim-snippets'
 Plug 'jalvesaq/Nvim-R'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'vim-airline/vim-airline'
+Plug 'Vimjas/vint'
 call plug#end()
 
 " ==========================================================
@@ -141,10 +142,10 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 nmap <leader>rf <Plug>(coc-refactor)
 " Remap for format selected region
-" xmap <leader>f  <Plug>(coc-format-selected)
-" nmap <leader>f  <Plug>(coc-format-selected)
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
 " Remap for format whole file
-inoremap <leader>f <Plug>(coc-format)
+inoremap <leader>fm <Plug>(coc-format)
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
