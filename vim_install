@@ -1,0 +1,33 @@
+#!/bin/bash
+#run this in vim/ directory.
+
+# A.  Create a Vim "runtime" subdirectory named "vim91"
+VER=vim91
+mkdir ${VER}
+cp -r runtime/* ${VER}
+
+# B.  Copy the new binaries into the "vim91" directory
+find ./src -name *.exe -exec cp {} ${VER}/ \;
+mkdir ${VER}/GvimExt32
+cp src/GvimExt/gvimext.dll ${VER}/GvimExt32/
+mkdir ${VER}/GvimExt64
+cp src/GvimExt/gvimext.dll ${VER}/GvimExt64/
+
+# C. download iconv and gettext. ignore 32-bit binaries.
+# https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.21-v1.16/gettext0.21-iconv1.16-shared-64.zip
+mkdir ../iconv
+pushd ../iconv
+curl -L -O -C - https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.21-v1.16/gettext0.21-iconv1.16-shared-64.zip
+unzip gettext0.21-iconv1.16-shared-64.zip
+popd
+
+
+#D.  Copy gettext and iconv DLLs into the "vim91" directory
+cp ../iconv/bin/libintl-8.dll ${VER}/
+cp ../iconv/bin/libiconv-2.dll ${VER}/
+cp ../iconv/bin/libintl-8.dll ${VER}/GvimExt32/
+cp ../iconv/bin/libiconv-2.dll ${VER}/GvimExt32/
+cp ../iconv/bin/libintl-8.dll ${VER}/GvimExt64/
+cp ../iconv/bin/libiconv-2.dll ${VER}/GvimExt64/
+
+#E.  Manual operation. Move the "vim91" directory into the Vim installation subdirectory
